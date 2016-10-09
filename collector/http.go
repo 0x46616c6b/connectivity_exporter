@@ -35,9 +35,16 @@ type HTTPExporter struct {
 
 // NewHTTPExporter returns an initialized Exporter.
 func NewHTTPExporter(hosts []string) *HTTPExporter {
+	timeout, err := time.ParseDuration("5s")
+	if err != nil {
+		log.Fatalln("Cannot parse timeout")
+	}
+
 	return &HTTPExporter{
-		hosts:  hosts,
-		client: &http.Client{},
+		hosts: hosts,
+		client: &http.Client{
+			Timeout: timeout,
+		},
 	}
 }
 
@@ -52,10 +59,7 @@ func (p *HTTPExporter) Describe(ch chan<- *prometheus.Desc) {
 // Prometheus metrics. It implements promethues.Collector.
 func (p *HTTPExporter) Collect(ch chan<- prometheus.Metric) {
 	for _, host := range p.hosts {
-		var s float64
-		s = 1
-		url := host
-
+		s, url := 1, host
 		if !strings.HasPrefix(host, "http") {
 			url = "https://" + host
 		}
@@ -69,7 +73,7 @@ func (p *HTTPExporter) Collect(ch chan<- prometheus.Metric) {
 		d := time.Since(t)
 
 		ch <- prometheus.MustNewConstMetric(
-			httpRequestSuccessful, prometheus.GaugeValue, s, host,
+			httpRequestSuccessful, prometheus.GaugeValue, float64(s), host,
 		)
 
 		ch <- prometheus.MustNewConstMetric(

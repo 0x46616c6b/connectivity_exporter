@@ -1,6 +1,8 @@
 FROM alpine:latest
 MAINTAINER louis@systemli.org
 
+EXPOSE 9449
+
 ENV GOPATH /go
 ENV APPPATH $GOPATH/src/github.com/0x46616c6b/connectivity_exporter
 COPY . $APPPATH
