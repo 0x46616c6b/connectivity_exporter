@@ -2,7 +2,7 @@
 
 Connectivity Metrics Exporter for Prometheus, written in Go.
 
-[![](https://images.microbadger.com/badges/version/0x46616c6b/connectivity_exporter.svg)](https://microbadger.com/images/0x46616c6b/connectivity_exporter "Get your own version badge on microbadger.com")
+[![Build Status](https://travis-ci.org/0x46616c6b/connectivity_exporter.svg?branch=master)](https://travis-ci.org/0x46616c6b/connectivity_exporter) [![](https://images.microbadger.com/badges/version/0x46616c6b/connectivity_exporter.svg)](https://microbadger.com/images/0x46616c6b/connectivity_exporter "Get your own version badge on microbadger.com")
 
 ## Run
 
