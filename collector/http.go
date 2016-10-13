@@ -65,7 +65,8 @@ func (p *HTTPExporter) Collect(ch chan<- prometheus.Metric) {
 		}
 
 		t := time.Now()
-		_, err := p.client.Get(url)
+		res, err := p.client.Get(url)
+		defer res.Body.Close()
 		if err != nil {
 			log.Errorln(err)
 			s = 0
