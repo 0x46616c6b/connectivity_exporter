@@ -3,6 +3,7 @@ package collector
 import (
 	"net/http"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -58,27 +59,37 @@ func (p *HTTPExporter) Describe(ch chan<- *prometheus.Desc) {
 // Collect fetches the Fastping stats and delivers them as
 // Prometheus metrics. It implements promethues.Collector.
 func (p *HTTPExporter) Collect(ch chan<- prometheus.Metric) {
+	var wg sync.WaitGroup
+
 	for _, host := range p.hosts {
-		s, url := 1, host
-		if !strings.HasPrefix(host, "http") {
-			url = "https://" + host
-		}
+		wg.Add(1)
 
-		t := time.Now()
-		res, err := p.client.Get(url)
-		defer res.Body.Close()
-		if err != nil {
-			log.Errorln(err)
-			s = 0
-		}
-		d := time.Since(t)
+		go func(host string, ch chan<- prometheus.Metric) {
+			defer wg.Done()
 
-		ch <- prometheus.MustNewConstMetric(
-			httpRequestSuccessful, prometheus.GaugeValue, float64(s), host,
-		)
+			s, url := 1, host
+			if !strings.HasPrefix(host, "http") {
+				url = "https://" + host
+			}
 
-		ch <- prometheus.MustNewConstMetric(
-			httpRequestTimeNS, prometheus.GaugeValue, float64(d.Nanoseconds()), host,
-		)
+			t := time.Now()
+			res, err := p.client.Get(url)
+			defer res.Body.Close()
+			if err != nil {
+				log.Errorln(err)
+				s = 0
+			}
+			d := time.Since(t)
+
+			ch <- prometheus.MustNewConstMetric(
+				httpRequestSuccessful, prometheus.GaugeValue, float64(s), host,
+			)
+
+			ch <- prometheus.MustNewConstMetric(
+				httpRequestTimeNS, prometheus.GaugeValue, float64(d.Nanoseconds()), host,
+			)
+		}(host, ch)
 	}
+
+	wg.Wait()
 }
