@@ -35,12 +35,7 @@ type HTTPExporter struct {
 }
 
 // NewHTTPExporter returns an initialized Exporter.
-func NewHTTPExporter(hosts []string) *HTTPExporter {
-	timeout, err := time.ParseDuration("5s")
-	if err != nil {
-		log.Fatalln("Cannot parse timeout")
-	}
-
+func NewHTTPExporter(hosts []string, timeout time.Duration) *HTTPExporter {
 	return &HTTPExporter{
 		hosts: hosts,
 		client: &http.Client{

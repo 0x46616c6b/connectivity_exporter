@@ -4,6 +4,7 @@ import (
 	"flag"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/0x46616c6b/connectivity_exporter/collector"
 
@@ -18,10 +19,10 @@ type Exporter struct {
 }
 
 // NewExporter returns an initialized Exporter wit all Collectors.
-func NewExporter(hosts []string) (*Exporter, error) {
+func NewExporter(hosts []string, timeout time.Duration) (*Exporter, error) {
 	return &Exporter{
 		[]prometheus.Collector{
-			collector.NewHTTPExporter(hosts),
+			collector.NewHTTPExporter(hosts, timeout),
 		},
 	}, nil
 }
@@ -46,13 +47,18 @@ func main() {
 	var (
 		listenAddress = flag.String("web.listen-address", ":9449", "Address to listen on for web interface and telemetry.")
 		metricsPath   = flag.String("web.telemetry-path", "/metrics", "Path under which to expose metrics.")
-		hosts         = flag.String("hosts", "google.com,facebook.com,github.com", "Comma seperated list with hosts to check")
+		httpHosts     = flag.String("http.hosts", "google.com,facebook.com,github.com", "Comma seperated list with hosts to check")
+		httpTimeout   = flag.String("http.timeout", "5s", "Timeout for the HTTP Checks")
 	)
 	flag.Parse()
 
-	hostList := strings.Split(*hosts, ",")
+	hosts := strings.Split(*httpHosts, ",")
+	timeout, err := time.ParseDuration(*httpTimeout)
+	if err != nil {
+		log.Fatalln(err)
+	}
 
-	exporter, err := NewExporter(hostList)
+	exporter, err := NewExporter(hosts, timeout)
 	if err != nil {
 		log.Fatalln(err)
 	}

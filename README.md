@@ -10,8 +10,10 @@ Connectivity Metrics Exporter for Prometheus, written in Go.
 
 ## Configuration
 
-    -hosts string
+    -http.hosts string
         Comma seperated list with hosts to check (default "google.com,facebook.com,github.com")
+    -http.timeout string
+        Timeout for the HTTP Checks (default "5s")
     -log.format value
         Set the log target and format. Example: "logger:syslog?appname=bob&local=7" or "logger:stdout?json=true" (default "logger:stderr")
     -log.level value
