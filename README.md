@@ -25,7 +25,11 @@ Connectivity Metrics Exporter for Prometheus, written in Go.
 
 ## Metrics
 
-    # Duration of the request
+    # Duration of the http request
     connectivity_http_request_time_ns
-    # Boolean value with 1 if the request was successful
+    # Boolean value with 1 if the http request was successful
     connectivity_http_request_successful
+    # Duration of the dns request
+    connectivity_dns_request_time_ns
+    # Boolean value with 1 if the dns request was successful
+    connectivity_dns_request_successful

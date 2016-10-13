@@ -23,6 +23,7 @@ func NewExporter(hosts []string, timeout time.Duration) (*Exporter, error) {
 	return &Exporter{
 		[]prometheus.Collector{
 			collector.NewHTTPExporter(hosts, timeout),
+			collector.NewDNSExporter(hosts),
 		},
 	}, nil
 }

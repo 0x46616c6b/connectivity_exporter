@@ -10,10 +10,6 @@ import (
 	"github.com/prometheus/common/log"
 )
 
-const (
-	namespace = "connectivity"
-)
-
 var (
 	httpRequestSuccessful = prometheus.NewDesc(
 		prometheus.BuildFQName(namespace, "", "http_request_successful"),
