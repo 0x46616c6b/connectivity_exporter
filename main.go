@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/0x46616c6b/connectivity_exporter/collector"
+
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/common/log"
 )
